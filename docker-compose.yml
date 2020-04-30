@@ -10,7 +10,7 @@ services:
     image: gliderlabs/logspout
     networks:
       - logs
-    command: syslog+tls://logs4.papertrailapp.com:$PAPERTRAILPORT
+    command: syslog+tls://$PAPERTRAILURL
     deploy:
       mode: global
       resources:
@@ -39,7 +39,7 @@ services:
     image: jessestuart/logspout
     networks:
       - logs
-    command: syslog+tls://logs4.papertrailapp.com:$PAPERTRAILPORT
+    command: syslog+tls://$PAPERTRAILURL
     deploy:
       mode: global
       resources:
