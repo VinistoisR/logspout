@@ -1,22 +1,63 @@
 version: "3.7"
 
+networks:
+  logs:
+
+#logspout x86 image
+
 services:
   logspout:
     image: gliderlabs/logspout
     networks:
       - logs
-    command: syslog+tls://logs.papertrailapp.com:$PAPERTRAILPORT
+    command: syslog+tls://logs4.papertrailapp.com:$PAPERTRAILPORT
     deploy:
       mode: global
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 3
+      placement:
+        constraints:
+          - node.platform.arch == x86_64
     volumes:
       - /etc/hostname:/etc/host_hostname:ro
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - ALLOW_TTY=true
-
-networks:
-  logs: 
+  
+  #logspout arm image  
+  
+  logspout-arm:
+    image: jessestuart/logspout
+    networks:
+      - logs
+    command: syslog+tls://logs4.papertrailapp.com:$PAPERTRAILPORT
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.platform.arch == aarch64
+    volumes:
+      - /etc/hostname:/etc/host_hostname:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ALLOW_TTY=true
